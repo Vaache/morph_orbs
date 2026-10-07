@@ -1,3 +1,6 @@
+.dart_tool/
+build/
+pubspec.lock
 .github/
 doc/
 tool/
@@ -5,3 +8,7 @@ test/media/
 test/preview/
 example/build/
 example/.dart_tool/
+example/pubspec.lock
+.idea/
+*.iml
+.DS_Store
