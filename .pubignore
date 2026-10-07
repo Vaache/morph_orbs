@@ -1,0 +1,7 @@
+.github/
+doc/
+tool/
+test/media/
+test/preview/
+example/build/
+example/.dart_tool/

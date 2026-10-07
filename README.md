@@ -1,12 +1,35 @@
 # morph_orbs
 
-Dotted 3D "thinking orb" indicators for AI chat interfaces. Seven states,
-seventeen geometries, and smooth dot-for-dot morphs between any of them. Plain `Canvas` circles: no shaders, no blur, no layers, no
-dependencies beyond Flutter.
+[![pub package](https://img.shields.io/pub/v/morph_orbs.svg)](https://pub.dev/packages/morph_orbs)
+[![CI](https://github.com/Vaache/morph_orbs/actions/workflows/ci.yml/badge.svg)](https://github.com/Vaache/morph_orbs/actions)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-The visual concept and the tuned geometries follow
-[thinking-orbs](https://github.com/Jakubantalik/Libraries.dev) by Jakub
-Antalik (MIT), re-implemented natively for Flutter. See `LICENSE`.
+Dotted 3D activity orbs for AI chat interfaces. Seven lifecycle states,
+seventeen geometries, and smooth dot-for-dot morphs between any of them.
+Pure `Canvas` circles: no shaders, no blur, no layers, no dependencies
+beyond Flutter.
+
+![All seventeen variants](https://raw.githubusercontent.com/Vaache/morph_orbs/main/doc/media/variants.gif)
+
+```dart
+MorphOrb(state: MorphOrbState.thinking, size: 48)
+```
+
+## Why
+
+- **Morphs, not swaps.** Every geometry is a list of dots, so a state change
+  lerps dot-for-dot into the next shape. Interrupt it mid-way and it morphs
+  from wherever the dots are.
+- **Lifecycle, not just "busy".** `idle → thinking → processing → generating`
+  and then `success`, `error` or `stopped`, each with its own settle.
+- **Any size, any ink.** Tuned at 20 / 32 / 64 px and interpolated between;
+  follows the ambient text colour or takes any colour you give it; works
+  over glass and gradients.
+- **Cheap.** One `Ticker` per orb, no per-frame widget rebuilds, reusable
+  typed buffers, a few hundred `drawCircle` calls. The ticker stops once a
+  terminal state has settled.
+
+![idle → thinking → processing → generating → success](https://raw.githubusercontent.com/Vaache/morph_orbs/main/doc/media/flow.gif)
 
 ## Installation
 
@@ -54,6 +77,10 @@ MorphOrb(
 `success`, `error` and `stopped` are terminal: they settle and then the
 ticker stops. The continuous states loop.
 
+![All seven states](https://raw.githubusercontent.com/Vaache/morph_orbs/main/doc/media/states.png)
+
+![thinking → error, thinking → stopped](https://raw.githubusercontent.com/Vaache/morph_orbs/main/doc/media/failstop.gif)
+
 ### Variants
 
 A continuous state renders with its default geometry (above). Pass
@@ -84,6 +111,10 @@ MorphOrb(state: MorphOrbState.thinking, variant: MorphOrbVariant.swarm)
 | `bloom`       | dotted rose opens and closes its petals                        |
 
 Changing `variant` morphs exactly like a state change.
+
+![Morphing between variants](https://raw.githubusercontent.com/Vaache/morph_orbs/main/doc/media/morphs.gif)
+
+![Variants grid](https://raw.githubusercontent.com/Vaache/morph_orbs/main/doc/media/variants.png)
 
 ### Transitions
 
@@ -203,4 +234,12 @@ interpolation, the controller's state machine (transitions, interruption,
 ticker lifecycle, reduced motion, disposal) and the widget (rendering,
 semantics, ambient colour, controller reuse, disposal). The optional
 `test/preview/render_preview_test.dart` dumps PNG frames when
-`ORB_PREVIEW_DIR` is set, for eyeballing changes.
+`ORB_PREVIEW_DIR` is set, for eyeballing changes; `tool/render_media.sh`
+regenerates the GIFs and stills in `doc/media/` (needs ffmpeg and Pillow).
+
+## Credits
+
+The visual concept and several tuned geometries follow
+[thinking-orbs](https://github.com/Jakubantalik/Libraries.dev) by Jakub
+Antalik (MIT), re-implemented for Flutter and extended with lifecycle
+states, morphing transitions and new geometries. See `LICENSE`.
