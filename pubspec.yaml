@@ -1,0 +1,25 @@
+name: morph_orbs
+description: Dotted 3D activity orbs for AI chat UIs. Seven lifecycle states, seventeen geometries, and smooth dot-for-dot morphs between any of them. Pure Canvas, no shaders.
+version: 0.1.0
+homepage: https://github.com/Vaache/morph_orbs
+repository: https://github.com/Vaache/morph_orbs
+issue_tracker: https://github.com/Vaache/morph_orbs/issues
+topics:
+  - animation
+  - ai
+  - loading-indicator
+  - chat
+  - ui
+
+environment:
+  sdk: '>=3.8.0 <4.0.0'
+  flutter: '>=3.32.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
