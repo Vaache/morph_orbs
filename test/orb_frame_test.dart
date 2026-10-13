@@ -82,5 +82,14 @@ void main() {
       expect(out.length, 1);
       expect(out.x(0), 5);
     });
+
+    test('blend carries the tint toward an untinted frame', () {
+      final from = OrbFrame()..addTinted(0, 0, 0, 1, 0, 1, 1, 0.5, 0, 1);
+      final to = OrbFrame()..add(10, 0, 0, 1, 0);
+      final out = OrbFrame();
+      OrbFrame.blend(from, to, 0.5, out, stagger: 0);
+      expect(out.tint(0), 0.5);
+      expect(out.x(0), 5);
+    });
   });
 }

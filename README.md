@@ -35,7 +35,7 @@ MorphOrb(state: MorphOrbState.thinking, size: 48)
 
 ```yaml
 dependencies:
-  morph_orbs: ^0.1.0
+  morph_orbs: ^0.2.0
 ```
 
 ```dart
@@ -129,6 +129,16 @@ idle → thinking → processing → generating → success
                   thinking → error
                   thinking → stopped
 ```
+
+## Animated logos and splash screens
+
+Want an SVG logo to assemble itself out of dots on your splash screen? See
+[morph_logo](https://pub.dev/packages/morph_logo), built on this package's
+engine.
+
+Building your own dotted animation? `package:morph_orbs/engine.dart` exposes
+the dot buffer and its morph (`OrbFrame`), the painter (`paintOrbFrame`),
+every orb geometry resolved for a size (`resolveOrbState`) and the math kit.
 
 ## Customization
 

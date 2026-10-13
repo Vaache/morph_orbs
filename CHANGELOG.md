@@ -1,3 +1,12 @@
+## 0.2.0
+
+- New `package:morph_orbs/engine.dart` library for packages built on the dot
+  engine: `OrbFrame`, `paintOrbFrame`, `OrbGeometry`, `OrbProfile`,
+  `resolveOrbState` and the math helpers.
+- Dots can carry their own colour: `OrbFrame.addTinted` and a tint channel
+  that `OrbFrame.blend` morphs across.
+- Dots with a zero radius are skipped when painting.
+
 ## 0.1.0
 
 Initial release.

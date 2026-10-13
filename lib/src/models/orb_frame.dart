@@ -8,13 +8,17 @@ import '../utils/orb_math.dart';
 class OrbFrame {
   OrbFrame({int capacity = 512}) : _data = Float64List(capacity * stride);
 
-  static const int stride = 6;
+  static const int stride = 10;
   static const int _ox = 0;
   static const int _oy = 1;
   static const int _oz = 2;
   static const int _or = 3;
   static const int _oInk = 4;
   static const int _oAlpha = 5;
+  static const int _oTintR = 6;
+  static const int _oTintG = 7;
+  static const int _oTintB = 8;
+  static const int _oTint = 9;
 
   static const int lineStride = 7;
 
@@ -44,6 +48,9 @@ class OrbFrame {
   double radius(int i) => _data[i * stride + _or];
   double ink(int i) => _data[i * stride + _oInk];
   double alpha(int i) => _data[i * stride + _oAlpha];
+
+  /// How far dot [i] leans from the ink toward its own colour, 0..1.
+  double tint(int i) => _data[i * stride + _oTint];
 
   void clear() {
     _length = 0;
@@ -102,7 +109,24 @@ class OrbFrame {
     double radius,
     double ink, [
     double alpha = 1,
-  ]) {
+  ]) => addTinted(x, y, z, radius, ink, alpha, 0, 0, 0, 0);
+
+  /// Like [add], with a colour of its own: [red], [green] and [blue] in
+  /// 0..1, and [tint] — how far the dot leans from the ink toward that
+  /// colour (0 = pure ink, 1 = pure tint). [blend] carries the tint across
+  /// a morph.
+  void addTinted(
+    double x,
+    double y,
+    double z,
+    double radius,
+    double ink,
+    double alpha,
+    double red,
+    double green,
+    double blue,
+    double tint,
+  ) {
     if (alpha < 0.02) {
       return;
     }
@@ -118,6 +142,10 @@ class OrbFrame {
     _data[base + _or] = radius;
     _data[base + _oInk] = ink;
     _data[base + _oAlpha] = alpha;
+    _data[base + _oTintR] = red;
+    _data[base + _oTintG] = green;
+    _data[base + _oTintB] = blue;
+    _data[base + _oTint] = tint;
     _length++;
     _sortedLength = -1;
   }
@@ -234,13 +262,31 @@ class OrbFrame {
       final ib = (k * nb ~/ n) * stride;
       final offset = stagger * hashD(k.toDouble(), 3.7);
       final f = smoothStep((progress * (1 + stagger) - offset) / 1);
-      out.add(
+      final ta = a[ia + _oTint];
+      final tb = b[ib + _oTint];
+      out.addTinted(
         lerp(a[ia + _ox], b[ib + _ox], f),
         lerp(a[ia + _oy], b[ib + _oy], f),
         lerp(a[ia + _oz], b[ib + _oz], f),
         lerp(a[ia + _or], b[ib + _or], f),
         lerp(a[ia + _oInk], b[ib + _oInk], f),
         lerp(a[ia + _oAlpha], b[ib + _oAlpha], f),
+        ta == 0
+            ? b[ib + _oTintR]
+            : (tb == 0
+                  ? a[ia + _oTintR]
+                  : lerp(a[ia + _oTintR], b[ib + _oTintR], f)),
+        ta == 0
+            ? b[ib + _oTintG]
+            : (tb == 0
+                  ? a[ia + _oTintG]
+                  : lerp(a[ia + _oTintG], b[ib + _oTintG], f)),
+        ta == 0
+            ? b[ib + _oTintB]
+            : (tb == 0
+                  ? a[ia + _oTintB]
+                  : lerp(a[ia + _oTintB], b[ib + _oTintB], f)),
+        lerp(ta, tb, f),
       );
     }
     out._appendLines(from, 1 - progress);
